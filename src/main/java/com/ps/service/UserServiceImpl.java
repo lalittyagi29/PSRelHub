@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ps.Exception.ResourceNotFoundException;
 import com.ps.model.User;
 import com.ps.payload.GoalDto;
+import com.ps.payload.UserEventDto;
 import com.ps.repository.NewUserRepo;
 import com.ps.utilty.PSUId;
 import com.ps.utilty.PSVaraible;
@@ -28,9 +29,9 @@ public class UserServiceImpl implements UserService {
 		} else {
 			createUser(user);
 		}
-		List<String> byDeafultEventList = new ArrayList<>();
 		List<GoalDto> byDefaultGoallist = new ArrayList<>();
-		user.setEventId(byDeafultEventList);
+		List<UserEventDto> byDefaultUserEventlist = new ArrayList<>();
+		user.setBookmarkEvent(byDefaultUserEventlist);
 		user.setCurrentGoal(byDefaultGoallist);
 		user.setPastGoal(byDefaultGoallist);
 		user.setVolunteerHour("0");
@@ -44,8 +45,8 @@ public class UserServiceImpl implements UserService {
 	public User updateBasicProfile(User user, String userId) {
 		User currentUserDetails = this.newUserRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
-		if (user.getNamee() != null) {
-			currentUserDetails.setNamee(user.getNamee());
+		if (user.getName() != null) {
+			currentUserDetails.setName(user.getName());
 		}
 		if (user.getLocation() != null) {
 			currentUserDetails.setLocation(user.getLocation());
@@ -58,25 +59,41 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateEventList(String userId, String eventId) {
+		UserEventDto userEventDto = new UserEventDto();
+		userEventDto.setEventId(eventId);
 		User userDetails = this.newUserRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
-		List<String> currentBookmarkList = userDetails.getEventId();
-		if (!currentBookmarkList.contains(eventId)) {
-			currentBookmarkList.add(eventId);
-			userDetails.setEventId(currentBookmarkList);
+		List<UserEventDto> userEventDtos = userDetails.getBookmarkEvent();
+		Boolean isAlreadyExist = false;
+		for (UserEventDto bookMarkEvent : userEventDtos) {
+			if (bookMarkEvent.getEventId().equals(eventId)) {
+				isAlreadyExist = true;
+			}
+		}
+
+		if (isAlreadyExist == false) {
+			userEventDtos.add(userEventDto);
+			userDetails.setBookmarkEvent(userEventDtos);
 			return this.newUserRepo.save(userDetails);
 		} else {
-			return this.newUserRepo.save(userDetails);
+			return userDetails;
 		}
+
 	}
 
 	@Override
 	public User unBookmarkEvent(String userId, String eventId) {
 		User userDetails = this.newUserRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
-		List<String> list_Event = userDetails.getEventId();
-		list_Event.remove(eventId);
-		userDetails.setEventId(list_Event);
+		List<UserEventDto> bookmarkEvents = userDetails.getBookmarkEvent();
+		for (int i = 0; i < bookmarkEvents.size(); i++) {
+			UserEventDto bookmarkevent = bookmarkEvents.get(i);
+			if (bookmarkevent.getEventId().equals(eventId)) {
+				bookmarkEvents.remove(bookmarkevent);
+				break;
+			}
+		}
+		userDetails.setBookmarkEvent(bookmarkEvents);
 		return this.newUserRepo.save(userDetails);
 	}
 
@@ -127,8 +144,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User completedGoal(String userId, String goalId) {
-		User userProfile = this.newUserRepo
-				.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
+		User userProfile = this.newUserRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
 		List<GoalDto> pastGoal = userProfile.getPastGoal();
 		List<GoalDto> currentGoal = userProfile.getCurrentGoal();
 		for (int i = 0; i < currentGoal.size(); i++) {

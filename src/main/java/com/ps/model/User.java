@@ -6,13 +6,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.ps.payload.GoalDto;
+import com.ps.payload.UserEventDto;
 
-@Document(collection = "USERDATA")
+@Document(collection = "USER_PROFILE_V1")
 public class User {
 
 	@Id
 	private String id;
-	private String namee;
+	private String name;
 	private String email;
 	private String password;
 	private String profilePictureUrl;
@@ -20,16 +21,17 @@ public class User {
 	private String moneyDonated;
 	private String Location;
 	private String bio;
-	private List<String> eventId;
+	// private List<String> eventId;
 	private List<GoalDto> currentGoal;
 	private List<GoalDto> pastGoal;
+	private List<UserEventDto> bookmarkEvent;
 
-	public User(String id, String namee, String email, String password, String profilePictureUrl, String volunteerHour,
+	public User(String id, String name, String email, String password, String profilePictureUrl, String volunteerHour,
 			String moneyDonated, String location, String bio, List<String> eventId, List<GoalDto> currentGoal,
-			List<GoalDto> pastgoal) {
+			List<GoalDto> pastgoal, List<UserEventDto> bookmarkEvent) {
 		super();
 		this.id = id;
-		this.namee = namee;
+		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.profilePictureUrl = profilePictureUrl;
@@ -37,9 +39,18 @@ public class User {
 		this.moneyDonated = moneyDonated;
 		Location = location;
 		this.bio = bio;
-		this.eventId = eventId;
+		// this.eventId = eventId;
 		this.currentGoal = currentGoal;
 		this.pastGoal = pastgoal;
+		this.bookmarkEvent = bookmarkEvent;
+	}
+
+	public List<UserEventDto> getBookmarkEvent() {
+		return bookmarkEvent;
+	}
+
+	public void setBookmarkEvent(List<UserEventDto> bookmarkEvent) {
+		this.bookmarkEvent = bookmarkEvent;
 	}
 
 	public List<GoalDto> getPastGoal() {
@@ -66,12 +77,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getNamee() {
-		return namee;
+	public String getName() {
+		return name;
 	}
 
-	public void setNamee(String namee) {
-		this.namee = namee;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {
@@ -130,13 +141,13 @@ public class User {
 		this.bio = bio;
 	}
 
-	public List<String> getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(List<String> eventId) {
-		this.eventId = eventId;
-	}
+//	public List<String> getEventId() {
+//		return eventId;
+//	}
+//
+//	public void setEventId(List<String> eventId) {
+//		this.eventId = eventId;
+//	}
 
 	public User() {
 		super();
