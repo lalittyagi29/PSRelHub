@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ps.model.Event;
+import com.ps.payload.EventDto;
 import com.ps.service.Events.EventService;
 
 @RestController
@@ -23,18 +24,18 @@ public class EventController {
 	private EventService eventService;
 
 	@PostMapping("/add")
-	public Event addEvent(@RequestBody Event event) {
+	public EventDto addEvent(@RequestBody Event event) {
 		return this.eventService.addEvent(event);
 	}
 
 	@PutMapping("/update")
 	@ResponseBody
-	public Event updateEvent(@RequestBody Event event, @RequestParam String eventId) {
+	public EventDto updateEvent(@RequestBody Event event, @RequestParam String eventId) {
 		return this.eventService.updateEvent(event, eventId);
 	}
 
 	@GetMapping("/list")
-	public List<Event> getAllEvent() {
+	public List<EventDto> getAllEvent() {
 		return this.eventService.getAllEvent();
 	}
 
@@ -46,7 +47,7 @@ public class EventController {
 
 	@GetMapping("")
 	@ResponseBody
-	public Event getEventById(@RequestParam String eventId){
+	public EventDto getEventById(@RequestParam String eventId){
         return this.eventService.getEventById(eventId);
 	}
 	

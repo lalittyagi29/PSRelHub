@@ -1,5 +1,6 @@
 package com.ps.service.Events;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ps.Exception.ResourceNotFoundException;
 import com.ps.model.Event;
+import com.ps.payload.EventDto;
 import com.ps.payload.GeoLocation;
 import com.ps.repository.EventRepo;
 import com.ps.utilty.PSUId;
@@ -19,7 +21,7 @@ public class EventServiceImpl implements EventService {
 	private EventRepo eventRepo;
 
 	@Override
-	public Event addEvent(Event event) {
+	public EventDto addEvent(Event event) {
 		String uniqueId = PSUId.getUniqueId(PSVaraible.EVENTS_MODEL);
 		Optional<Event> eventById = this.eventRepo.findById(uniqueId);
 		if (eventById.isEmpty()) {
@@ -27,13 +29,14 @@ public class EventServiceImpl implements EventService {
 		} else {
 			addEvent(event);
 		}
-		return this.eventRepo.save(event);
+		 Event saveEvent = this.eventRepo.save(event);
+		 return this.convertEventToEventDto(saveEvent);
 	}
 
 	@Override
-	public Event updateEvent(Event event, String evntId) {
+	public EventDto updateEvent(Event event, String evntId) {
 		Event currentEvent = this.eventRepo.findById(evntId)
-		.orElseThrow(()->new ResourceNotFoundException("Event", "Id", evntId));
+				.orElseThrow(() -> new ResourceNotFoundException("Event", "Id", evntId));
 		if (event.getOrganiserName() != null) {
 			currentEvent.setOrganiserName(event.getOrganiserName());
 		}
@@ -61,7 +64,8 @@ public class EventServiceImpl implements EventService {
 		if (event.getTitle() != null) {
 			currentEvent.setTitle(event.getTitle());
 		}
-		return this.eventRepo.save(currentEvent);
+		Event updatedEvent = this.eventRepo.save(currentEvent);
+		return this.convertEventToEventDto(updatedEvent);
 	}
 
 	@Override
@@ -75,19 +79,26 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Event getEventById(String eventId) {
-		return this.eventRepo.findById(eventId)
-		.orElseThrow(()->new ResourceNotFoundException("Event", "Id", eventId));
+	public EventDto getEventById(String eventId) {
+		Event event = this.eventRepo.findById(eventId)
+				.orElseThrow(() -> new ResourceNotFoundException("Event", "Id", eventId));
+		return convertEventToEventDto(event);
 	}
 
 	@Override
-	public List<Event> getAllEvent() {
-		return this.eventRepo.findAll();
+	public List<EventDto> getAllEvent() {
+		List<EventDto> list_Of_Event = new ArrayList<>();
+		List<Event> findAllEvent = this.eventRepo.findAll();
+		for (Event event : findAllEvent) {
+			EventDto convertEventToEventDto = this.convertEventToEventDto(event);
+			list_Of_Event.add(convertEventToEventDto);
+		}
+		return list_Of_Event;
 	}
 
 	@Override
 	public List<Event> getEventByLocation(GeoLocation geoLocation, Integer rangeInKm) {
-		
+
 		return null;
 	}
 
@@ -101,6 +112,21 @@ public class EventServiceImpl implements EventService {
 	public List<Event> getEventByCause(String cause) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public EventDto convertEventToEventDto(Event event) {
+		EventDto eventDto = new EventDto();
+		eventDto.setBackgroundImgUrl(event.getBackgroundImgUrl());
+		eventDto.setCausesTag(event.getCausesTag());
+		eventDto.setDate(event.getDate());
+		eventDto.setDescription(event.getDescription());
+		eventDto.setEndTime(event.getEndTime());
+		eventDto.setEventId(event.getEventId());
+		eventDto.setLocation(event.getLocation());
+		eventDto.setStartTime(event.getStartTime());
+		eventDto.setTitle(event.getTitle());
+		eventDto.setOrganiserName(event.getOrganiserName());
+		return eventDto;
 	}
 
 }
