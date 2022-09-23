@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ps.model.Event;
+import com.ps.payload.CausesDto;
 import com.ps.payload.EventDto;
 import com.ps.service.Events.EventService;
 
@@ -47,8 +48,19 @@ public class EventController {
 
 	@GetMapping("")
 	@ResponseBody
-	public EventDto getEventById(@RequestParam String eventId){
-        return this.eventService.getEventById(eventId);
+	public EventDto getEventById(@RequestParam String eventId) {
+		return this.eventService.getEventById(eventId);
 	}
-	
+
+	@GetMapping("/filter/cause")
+	public List<Event> getEventByCause(@RequestBody List<CausesDto> causesDtos) {
+		return this.eventService.getEventByCause(causesDtos);
+	}
+
+	@GetMapping("/filter/sorting")
+	@ResponseBody
+	public List<Event> getEventBySorting(@RequestParam Integer option) {
+		return this.eventService.getEventBySorting(option);
+	}
+
 }

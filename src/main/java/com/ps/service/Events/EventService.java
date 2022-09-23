@@ -3,6 +3,7 @@ package com.ps.service.Events;
 import java.util.List;
 
 import com.ps.model.Event;
+import com.ps.payload.CausesDto;
 import com.ps.payload.EventDto;
 import com.ps.payload.GeoLocation;
 
@@ -22,6 +23,8 @@ public interface EventService {
 
 	List<Event> getEventByAvailability(List<String> availablity);
 
-	List<Event> getEventByCause(String cause);
+	List<Event> getEventByCause(List<CausesDto> cause);
+	
+	List<Event> getEventBySorting(int option);
 
 }

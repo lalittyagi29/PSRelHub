@@ -1,13 +1,19 @@
 package com.ps.service.Events;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ps.Exception.ResourceNotFoundException;
 import com.ps.model.Event;
+import com.ps.payload.CausesDto;
 import com.ps.payload.EventDto;
 import com.ps.payload.GeoLocation;
 import com.ps.repository.EventRepo;
@@ -29,8 +35,8 @@ public class EventServiceImpl implements EventService {
 		} else {
 			addEvent(event);
 		}
-		 Event saveEvent = this.eventRepo.save(event);
-		 return this.convertEventToEventDto(saveEvent);
+		Event saveEvent = this.eventRepo.save(event);
+		return this.convertEventToEventDto(saveEvent);
 	}
 
 	@Override
@@ -109,9 +115,19 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventByCause(String cause) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Event> getEventByCause(List<CausesDto> causeList) {
+
+		List<Event> fullFilterListByCause = new ArrayList<>();
+
+		for (CausesDto causesDto : causeList) {
+			String cause = causesDto.getCause();
+			List<Event> findByCausesTag = this.eventRepo.findByCausesTag(cause);
+			fullFilterListByCause = Stream.concat(fullFilterListByCause.stream(), findByCausesTag.stream())
+					.collect(Collectors.toList());
+			findByCausesTag.clear();
+		}
+
+		return fullFilterListByCause;
 	}
 
 	public EventDto convertEventToEventDto(Event event) {
@@ -127,6 +143,32 @@ public class EventServiceImpl implements EventService {
 		eventDto.setTitle(event.getTitle());
 		eventDto.setOrganiserName(event.getOrganiserName());
 		return eventDto;
+	}
+
+	@Override
+	public List<Event> getEventBySorting(int option) {
+		List<Event> findAllEvent = this.eventRepo.findAll();
+		switch (option) {
+
+		case 1:
+			Comparator<Event> aToz = (o1, o2) -> {
+				return (o1.getTitle().compareTo(o2.getTitle()));
+			};
+			Collections.sort(findAllEvent, aToz);
+			return findAllEvent;
+
+		case 2:
+			Comparator<Event> zToa = (o1, o2) -> {
+				return (o2.getTitle().compareTo(o1.getTitle()));
+			};
+			Collections.sort(findAllEvent, zToa);
+			return findAllEvent;
+
+		case 3:
+		case 4:
+		}
+		return null;
+
 	}
 
 }
