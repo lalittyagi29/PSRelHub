@@ -53,13 +53,13 @@ public class EventController {
 	}
 
 	@GetMapping("/filter/cause")
-	public List<Event> getEventByCause(@RequestBody List<CausesDto> causesDtos) {
+	public List<EventDto> getEventByCause(@RequestBody List<CausesDto> causesDtos) {
 		return this.eventService.getEventByCause(causesDtos);
 	}
 
 	@GetMapping("/filter/sorting")
 	@ResponseBody
-	public List<Event> getEventBySorting(@RequestParam Integer option) {
+	public List<EventDto> getEventBySorting(@RequestParam Integer option) {
 		return this.eventService.getEventBySorting(option);
 	}
 

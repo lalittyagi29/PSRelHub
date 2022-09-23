@@ -23,8 +23,8 @@ public interface EventService {
 
 	List<Event> getEventByAvailability(List<String> availablity);
 
-	List<Event> getEventByCause(List<CausesDto> cause);
+	List<EventDto> getEventByCause(List<CausesDto> cause);
 	
-	List<Event> getEventBySorting(int option);
+	List<EventDto> getEventBySorting(int option);
 
 }

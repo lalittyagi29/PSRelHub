@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ps.Exception.ResourceNotFoundException;
 import com.ps.model.User;
 import com.ps.payload.GoalDto;
+import com.ps.payload.UserDto;
 import com.ps.payload.UserEventDto;
 import com.ps.repository.NewUserRepo;
 import com.ps.utilty.PSUId;
@@ -98,10 +99,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserById(String userId) {
+	public UserDto getUserById(String userId) {
+		UserDto userDto = new UserDto();
 		User user = this.newUserRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("UserId", "Id", userId));
-		return user;
+		List<GoalDto> currentGoal = user.getCurrentGoal();
+		userDto.setId(user.getId());
+		userDto.setName(user.getName());
+		userDto.setEmail(user.getEmail());
+		userDto.setProfilePictureUrl(user.getProfilePictureUrl());
+		userDto.setMoneyDonated(user.getMoneyDonated());
+		userDto.setBio(user.getBio());
+		userDto.setCurrentGoal(user.getCurrentGoal());
+		userDto.setPastGoal(user.getPastGoal());
+		userDto.setBookmarkEvent(user.getBookmarkEvent());
+		userDto.setVolunteerHour(user.getVolunteerHour());
+		userDto.setLocation(user.getLocation());
+		userDto.setTotalGoal(currentGoal.size());
+		return userDto;
 	}
 
 	@Override

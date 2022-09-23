@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ps.model.User;
 import com.ps.payload.GoalDto;
+import com.ps.payload.UserDto;
 
 public interface UserService {
 
@@ -13,7 +14,7 @@ public interface UserService {
 
 	User updateEventList(String userId, String eventId);
 
-	User getUserById(String userId);
+	UserDto getUserById(String userId);
 
 	List<User> getAllUSer();
 

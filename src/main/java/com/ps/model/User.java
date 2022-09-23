@@ -21,7 +21,6 @@ public class User {
 	private String moneyDonated;
 	private String Location;
 	private String bio;
-	// private List<String> eventId;
 	private List<GoalDto> currentGoal;
 	private List<GoalDto> pastGoal;
 	private List<UserEventDto> bookmarkEvent;
@@ -39,7 +38,6 @@ public class User {
 		this.moneyDonated = moneyDonated;
 		Location = location;
 		this.bio = bio;
-		// this.eventId = eventId;
 		this.currentGoal = currentGoal;
 		this.pastGoal = pastgoal;
 		this.bookmarkEvent = bookmarkEvent;
@@ -140,14 +138,6 @@ public class User {
 	public void setBio(String bio) {
 		this.bio = bio;
 	}
-
-//	public List<String> getEventId() {
-//		return eventId;
-//	}
-//
-//	public void setEventId(List<String> eventId) {
-//		this.eventId = eventId;
-//	}
 
 	public User() {
 		super();

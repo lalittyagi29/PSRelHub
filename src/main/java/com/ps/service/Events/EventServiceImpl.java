@@ -115,18 +115,21 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventByCause(List<CausesDto> causeList) {
-
-		List<Event> fullFilterListByCause = new ArrayList<>();
-
+	public List<EventDto> getEventByCause(List<CausesDto> causeList) {
+		List<EventDto> fullFilterListByCause = new ArrayList<>();
+		List<EventDto> causeDtoList = new ArrayList<>();
 		for (CausesDto causesDto : causeList) {
 			String cause = causesDto.getCause();
 			List<Event> findByCausesTag = this.eventRepo.findByCausesTag(cause);
-			fullFilterListByCause = Stream.concat(fullFilterListByCause.stream(), findByCausesTag.stream())
+			for (Event event : findByCausesTag) {
+				causeDtoList.add(convertEventToEventDto(event));
+			}
+
+			fullFilterListByCause = Stream.concat(fullFilterListByCause.stream(), causeDtoList.stream())
 					.collect(Collectors.toList());
 			findByCausesTag.clear();
+			causeDtoList.clear();
 		}
-
 		return fullFilterListByCause;
 	}
 
@@ -146,8 +149,9 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<Event> getEventBySorting(int option) {
+	public List<EventDto> getEventBySorting(int option) {
 		List<Event> findAllEvent = this.eventRepo.findAll();
+		List<EventDto> listDtoEvent = new ArrayList<>();
 		switch (option) {
 
 		case 1:
@@ -155,20 +159,44 @@ public class EventServiceImpl implements EventService {
 				return (o1.getTitle().compareTo(o2.getTitle()));
 			};
 			Collections.sort(findAllEvent, aToz);
-			return findAllEvent;
+			for (Event event : findAllEvent) {
+				listDtoEvent.add(convertEventToEventDto(event));
+			}
+
+			return listDtoEvent;
 
 		case 2:
 			Comparator<Event> zToa = (o1, o2) -> {
 				return (o2.getTitle().compareTo(o1.getTitle()));
 			};
 			Collections.sort(findAllEvent, zToa);
-			return findAllEvent;
+			for (Event event : findAllEvent) {
+				listDtoEvent.add(convertEventToEventDto(event));
+			}
+
+			return listDtoEvent;
 
 		case 3:
+			Comparator<Event> newToOldDate = (o1, o2) -> {
+				return (o1.getDate().compareTo(o2.getDate()));
+			};
+			Collections.sort(findAllEvent, newToOldDate);
+			for (Event event : findAllEvent) {
+				listDtoEvent.add(convertEventToEventDto(event));
+			}
+
+			return listDtoEvent;
 		case 4:
+			Comparator<Event> oldToNewDate = (o1, o2) -> {
+				return (o2.getDate().compareTo(o1.getDate()));
+			};
+			Collections.sort(findAllEvent, oldToNewDate);
+			for (Event event : findAllEvent) {
+				listDtoEvent.add(convertEventToEventDto(event));
+			}
+
+			return listDtoEvent;
 		}
 		return null;
-
 	}
-
 }

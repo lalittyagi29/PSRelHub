@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ps.model.User;
 import com.ps.payload.GoalDto;
+import com.ps.payload.UserDto;
 import com.ps.service.UserService;
 
 @RestController
@@ -42,7 +43,7 @@ public class Controller {
 
 	@GetMapping("/")
 	@ResponseBody
-	public User getUserById(@RequestParam String userId) {
+	public UserDto getUserById(@RequestParam String userId) {
 		return this.userService.getUserById(userId);
 	}
 
